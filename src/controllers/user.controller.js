@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const ResponseTemplate = require('../helper/response.helper');
 const prisma = new PrismaClient();
 const hashPassword = require('../utils/hashPassword');
+const Sentry = require('@sentry/node');
 
 async function Register(req, res) {
   const { username, email, password } = req.body;
@@ -26,6 +27,7 @@ async function Register(req, res) {
       .status(201)
       .json(ResponseTemplate(newUser, 'created', null, 201));
   } catch (error) {
+    Sentry.captureException(e);
     return res
       .status(500)
       .json(ResponseTemplate(null, 'internal server error', error, 500));
