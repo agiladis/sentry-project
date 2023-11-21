@@ -9,6 +9,18 @@ async function Register(req, res) {
   const { username, email, password } = req.body;
 
   try {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!existingUser) {
+      return res
+        .status(400)
+        .json(ResponseTemplate(null, 'iemail already used', null, 400));
+    }
+
     const hashedPassword = await hashPassword(password);
     const newUser = await prisma.user.create({
       data: {
