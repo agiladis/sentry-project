@@ -27,7 +27,7 @@ async function Register(req, res) {
       .status(201)
       .json(ResponseTemplate(newUser, 'created', null, 201));
   } catch (error) {
-    Sentry.captureException(e);
+    Sentry.captureException(error);
     return res
       .status(500)
       .json(ResponseTemplate(null, 'internal server error', error, 500));
