@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const logger = require('./middleware/logger');
-const router = require('./routes/route');
+const authRouter = require('./routes/auth.route');
 const Sentry = require('@sentry/node');
 
 const PORT = process.env.PORT;
@@ -22,7 +22,7 @@ Sentry.init({
 });
 
 // API route
-app.use('', router);
+app.use('/api/auth', authRouter);
 
 app.listen(PORT, () => {
   console.log(`sentry project listening at http://localhost:${PORT}`);
