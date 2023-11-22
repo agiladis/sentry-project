@@ -22,7 +22,7 @@ Sentry.init({
 });
 
 // API route
-app.use('api/auth', authRouter);
+app.use('/api/auth', authRouter);
 
 app.listen(PORT, () => {
   console.log(`sentry project listening at http://localhost:${PORT}`);

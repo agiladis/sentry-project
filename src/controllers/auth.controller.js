@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const ResponseTemplate = require('../helper/response.helper');
 const hashPassword = require('../utils/hashPassword');
 const Sentry = require('@sentry/node');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 async function Register(req, res) {
   const { username, email, password } = req.body;
@@ -15,7 +17,7 @@ async function Register(req, res) {
       },
     });
 
-    if (!existingUser) {
+    if (existingUser) {
       return res
         .status(400)
         .json(ResponseTemplate(null, 'bad request', 'email already used', 400));
@@ -85,11 +87,19 @@ async function Login(req, res) {
         );
     }
 
+    const token = jwt.sign(
+      {
+        id: existingUser.id,
+        username: existingUser.existingUser,
+        email: existingUser.email,
+      },
+      JWT_SECRET_KEY,
+      { expiresIn: '1h' }
+    );
+
     return res
       .status(200)
-      .json(
-        ResponseTemplate(existingUser.username, 'login succcess', null, 200)
-      );
+      .json(ResponseTemplate(token, 'login succcess', null, 200));
   } catch (error) {
     Sentry.captureException(error);
     return res
