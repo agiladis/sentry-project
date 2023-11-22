@@ -18,7 +18,7 @@ async function Register(req, res) {
     if (!existingUser) {
       return res
         .status(400)
-        .json(ResponseTemplate(null, 'iemail already used', null, 400));
+        .json(ResponseTemplate(null, 'bad request', 'email already used', 400));
     }
 
     const hashedPassword = await hashPassword(password);
@@ -60,7 +60,14 @@ async function Login(req, res) {
     if (!existingUser) {
       return res
         .status(404)
-        .json(ResponseTemplate(null, 'invalid email or password', null, 404));
+        .json(
+          ResponseTemplate(
+            null,
+            'bad request',
+            'invalid email or password',
+            404
+          )
+        );
     }
 
     const validPassword = await bcrypt.compare(password, existingUser.password);
@@ -68,7 +75,14 @@ async function Login(req, res) {
     if (!validPassword) {
       return res
         .status(404)
-        .json(ResponseTemplate(null, 'invalid email or password', null, 404));
+        .json(
+          ResponseTemplate(
+            null,
+            'bad request',
+            'invalid email or password',
+            404
+          )
+        );
     }
 
     return res
