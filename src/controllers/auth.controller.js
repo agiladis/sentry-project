@@ -99,7 +99,7 @@ async function Login(req, res) {
 
     return res
       .status(200)
-      .json(ResponseTemplate(token, 'login succcess', null, 200));
+      .json(ResponseTemplate({ token: token }, 'login succcess', null, 200));
   } catch (error) {
     Sentry.captureException(error);
     return res
